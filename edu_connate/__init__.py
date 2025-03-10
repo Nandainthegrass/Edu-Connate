@@ -1,9 +1,10 @@
 from flask import Flask
 from edu_connate.models import db
+from flask_migrate import Migrate
 import os
 from dotenv import load_dotenv
-from edu_connate.routes import register_routes
-
+from edu_connate.admin import admin_bp
+from edu_connate.user import user_bp
 load_dotenv()
 
 def create_app():
@@ -12,8 +13,15 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    register_routes(app)
+    migrate = Migrate(app, db)
+
+    app.register_blueprint(admin_bp)
+    app.register_blueprint(user_bp)
 
     db.init_app(app)
+
+    with app.app_context():
+        db.create_all()
+        print("Tables created")
 
     return app
