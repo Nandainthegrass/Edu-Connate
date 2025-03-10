@@ -2,3 +2,5 @@ flask
 flask-sqlalchemy
 mysqlclient
 dotenv
+flask-migrate
+werkzeug

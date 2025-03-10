@@ -14,10 +14,13 @@ def create_user_controller():
         selected_courses = request.form.getlist("courses")
         role = "student"
 
-        new_student = User(name=name, email=email, password=password, role = role)
+        print(name, email, password, selected_courses, role)
+
+        new_student = User(name=name, email=email, role = role)
+        new_student.set_password(password)
 
         for course_id in selected_courses:
-            course = Course.query.get(course_id)
+            course = Course.query.get(int(course_id))
             if course:
                 new_student.courses.append(course)
 
@@ -25,7 +28,7 @@ def create_user_controller():
         db.session.commit()
 
         flash("Student created successfully!", "success")
-        return
+        return render_template("home.html")
     
     courses = Course.query.all()
     return render_template("create_student.html", courses = courses)
